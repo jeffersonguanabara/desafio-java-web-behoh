@@ -1,13 +1,16 @@
 package br.com.desafio.behoh.api.web.domain;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.lang.NonNull;
 
 @Entity
@@ -25,16 +28,22 @@ public class Evento {
 	private Integer vagas;
 	
 	@NonNull
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date data_e_hora_de_inicio;
 	
 	@NonNull
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date data_e_hora_de_fim;
+	
+	@OneToMany(mappedBy = "eventos")
+	private List<InscricaoEvento> inscricoes;
 	
 	public Evento() {
 		super();
 	}
 
-	public Evento(String nome, Integer vagas, Date data_e_hora_de_inicio, Date data_e_hora_de_fim) {
+	public Evento(String nome, Integer vagas, 
+			Date data_e_hora_de_inicio, Date data_e_hora_de_fim) {
 		super();
 		this.nome = nome;
 		this.vagas = vagas;
@@ -80,6 +89,14 @@ public class Evento {
 
 	public void setData_e_hora_de_fim(Date data_e_hora_de_fim) {
 		this.data_e_hora_de_fim = data_e_hora_de_fim;
+	}
+
+	public List<InscricaoEvento> getInscricoes() {
+		return inscricoes;
+	}
+
+	public void setInscricoes(List<InscricaoEvento> inscricoes) {
+		this.inscricoes = inscricoes;
 	}
 
 	@Override

@@ -1,9 +1,12 @@
 package br.com.desafio.behoh.api.web.domain;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.lang.NonNull;
@@ -18,6 +21,9 @@ public class Usuario {
 	
 	@NonNull
 	private String nome;
+	
+	@OneToMany(mappedBy = "usuarios")
+	private List<InscricaoEvento> inscricoes;
 	
 	public Usuario() {
 		super();
@@ -42,6 +48,14 @@ public class Usuario {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+	
+	public List<InscricaoEvento> getInscricoes() {
+		return inscricoes;
+	}
+
+	public void setInscricoes(List<InscricaoEvento> inscricoes) {
+		this.inscricoes = inscricoes;
 	}
 
 	@Override
