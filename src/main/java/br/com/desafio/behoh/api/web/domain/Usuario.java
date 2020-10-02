@@ -2,6 +2,7 @@ package br.com.desafio.behoh.api.web.domain;
 
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,6 +21,7 @@ public class Usuario {
 	private Long id;
 	
 	@NonNull
+	@Column(name = "nome", unique = true)
 	private String nome;
 	
 	@OneToMany(mappedBy = "usuarios")

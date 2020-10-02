@@ -42,13 +42,17 @@ public class InscricaoEvento {
 		super();
 	}
 
-	public InscricaoEvento(Usuario usuario, Evento evento, Situacao situacao, Presenca presenca) {
+	public InscricaoEvento(Usuario usuario, Evento evento, Situacao situacao, Presenca presenca,
+			Date data_de_inscricao) {
 		super();
 		this.usuario = usuario;
 		this.evento = evento;
 		this.situacao = situacao;
 		this.presenca = presenca;
+		this.data_de_inscricao = data_de_inscricao;
 	}
+
+
 
 	public Long getId() {
 		return id;
@@ -126,6 +130,8 @@ public class InscricaoEvento {
 	@Override
 	public String toString() {
 		return "InscricaoEvento [id=" + id + ", usuario=" + usuario + ", evento=" + evento + ", situacao=" + situacao
-				+ ", presenca=" + presenca + "]";
-	}	
+				+ ", presenca=" + presenca + ", data_de_inscricao=" + data_de_inscricao + "]";
+	}
+
+	
 }
