@@ -9,11 +9,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.springframework.lang.NonNull;
 
 @Entity
-@Table(name = "usuario")
+@Table(name = "usuario",uniqueConstraints = {@UniqueConstraint(columnNames = "nome")})
 public class Usuario {
 	
 	@Id
@@ -24,7 +25,7 @@ public class Usuario {
 	@Column(name = "nome", unique = true)
 	private String nome;
 	
-	@OneToMany(mappedBy = "usuarios")
+	@OneToMany(mappedBy = "usuario")
 	private List<InscricaoEvento> inscricoes;
 	
 	public Usuario() {

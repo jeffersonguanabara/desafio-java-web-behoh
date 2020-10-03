@@ -35,7 +35,7 @@ public class Evento {
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date data_e_hora_de_fim;
 	
-	@OneToMany(mappedBy = "eventos")
+	@OneToMany(mappedBy = "evento")
 	private List<InscricaoEvento> inscricoes;
 	
 	public Evento() {

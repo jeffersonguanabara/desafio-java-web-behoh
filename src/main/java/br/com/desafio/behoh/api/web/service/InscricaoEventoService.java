@@ -16,8 +16,8 @@ import br.com.desafio.behoh.api.web.domain.Situacao;
 import br.com.desafio.behoh.api.web.domain.Usuario;
 import br.com.desafio.behoh.api.web.repository.InscricaoEventoRepository;
 import br.com.desafio.behoh.api.web.repository.filter.InscricaoEventoFilter;
-import br.com.desafio.behoh.api.web.service.exception.EventStartedException;
-import br.com.desafio.behoh.api.web.service.exception.NoMoreVacanciesException;
+import br.com.desafio.behoh.api.web.service.exceptions.EventStartedException;
+import br.com.desafio.behoh.api.web.service.exceptions.NoMoreVacanciesException;
 
 
 @Service
@@ -26,47 +26,57 @@ public class InscricaoEventoService {
 	@Autowired
 	private InscricaoEventoRepository inscricaoEventoRepository;
 	
-	public InscricaoEvento salvarInscricao(Evento evento, Usuario usuario, Situacao situacao) {
-		
-		InscricaoEvento nova_inscricao = null;
-		InscricaoEventoFilter filter = new InscricaoEventoFilter();
-		filter.setEvento_id(evento.getId());
+	public InscricaoEvento salvarInscricao(InscricaoEvento inscricao) {
 				
-		List<InscricaoEvento> inscricoesSalvas = inscricaoEventoRepository.pesquisar(filter, situacao);
+		InscricaoEventoFilter filter = new InscricaoEventoFilter();
+		filter.setEvento_id(inscricao.getEvento().getId());
+		filter.setUsuario_id(inscricao.getUsuario().getId());
+				
+		List<InscricaoEvento> inscricoesSalvas = inscricaoEventoRepository.pesquisar(filter, inscricao.getSituacao());
+		
+		System.out.println("inscriçoes: " + inscricoesSalvas);
 		
 		if(inscricoesSalvas.isEmpty() || inscricoesSalvas == null) {
-			nova_inscricao = new InscricaoEvento(usuario, evento, situacao, Presenca.AUSENTE, Date.from(Instant.now()));
+			inscricao.setSituacao(Situacao.INSCRITO);
+			inscricao.setPresenca(Presenca.AUSENTE);
+			inscricao.setData_de_inscricao(Date.from(Instant.now()));
 		} else {
-			if (situacao == Situacao.INSCRITO) {
-				if(inscricoesSalvas.size() >= evento.getVagas()) {
+			if (inscricao.getSituacao() == Situacao.INSCRITO) {
+				if(inscricoesSalvas.size() >= inscricao.getEvento().getVagas()) {
 					throw new NoMoreVacanciesException("Não há mais vagas!");
 				} else {
-					if ((evento.getData_e_hora_de_inicio().compareTo(Date.from(Instant.now()))) < 0) {
+					if ((inscricao.getEvento().getData_e_hora_de_inicio().compareTo(Date.from(Instant.now()))) < 0) {
 						throw new EventStartedException("Tempo de inscrição expirado!");
 					} else {
 						boolean validador = false;
 						for (InscricaoEvento inscricaoEvento : inscricoesSalvas) {
-							if(inscricaoEvento.getUsuario().getId() == usuario.getId()) {
+							if(inscricaoEvento.getUsuario().getId() == inscricao.getUsuario().getId()) {
 								validador = true;
 							}
 						}
 						if(validador) {
 							throw new NoMoreVacanciesException("Usuário já está inscrito!");
 						} else {
-							nova_inscricao = new InscricaoEvento(usuario, evento, situacao, Presenca.AUSENTE, Date.from(Instant.now()));
+							inscricao.setSituacao(Situacao.INSCRITO);
+							inscricao.setPresenca(Presenca.AUSENTE);
+							inscricao.setData_de_inscricao(Date.from(Instant.now()));
 						}
 					}
 				}	
 			} else {
-				nova_inscricao = new InscricaoEvento(usuario, evento, situacao, Presenca.AUSENTE, Date.from(Instant.now()));		
+				inscricao.setSituacao(Situacao.INSCRITO);
+				inscricao.setPresenca(Presenca.AUSENTE);
+				inscricao.setData_de_inscricao(Date.from(Instant.now()));		
 			}
 		}
-		return inscricaoEventoRepository.save(nova_inscricao);
+		return inscricaoEventoRepository.save(inscricao);
 	}
 	
-	public InscricaoEvento salvarReserva(Evento evento, Usuario usuario, Situacao situacao) {
-		InscricaoEvento nova_reserva = new InscricaoEvento(usuario, evento, situacao, Presenca.AUSENTE, Date.from(Instant.now()));
-		return inscricaoEventoRepository.save(nova_reserva);
+	public InscricaoEvento salvarReserva(InscricaoEvento inscricaoEvento) {
+		inscricaoEvento.setSituacao(Situacao.RESERVADO);
+		inscricaoEvento.setPresenca(Presenca.AUSENTE);
+		inscricaoEvento.setData_de_inscricao(Date.from(Instant.now()));
+		return inscricaoEventoRepository.save(inscricaoEvento);
 	}
 	
 	public InscricaoEvento converterReservaEmInscricao(InscricaoEvento inscricaoEvento,
@@ -88,12 +98,33 @@ public class InscricaoEventoService {
 		return inscricaoEventoRepository.save(inscricaoEvento);
 	}
 	
-	public List<InscricaoEvento> pesquisar(InscricaoEvento inscricaoEvento) {
-		
+	public List<InscricaoEvento> pesquisar(InscricaoEvento inscricaoEvento, Situacao situacao) {
+		System.out.println("Entrou no metodo de pesquisa");
 		InscricaoEventoFilter inscricaoEventoFilter = new InscricaoEventoFilter();
-		inscricaoEventoFilter.setUsuario_id(inscricaoEvento.getUsuario().getId());
 		
-		List<InscricaoEvento> inscricoes = inscricaoEventoRepository.pesquisar(inscricaoEventoFilter, null);
+		if(inscricaoEvento.getUsuario().getId() == null && inscricaoEvento.getId() == null) {
+			inscricaoEventoFilter.setEvento_id(inscricaoEvento.getEvento().getId());
+		}
+		else if(inscricaoEvento.getEvento().getId() == null && inscricaoEvento.getId() == null) {
+			inscricaoEventoFilter.setUsuario_id(inscricaoEvento.getUsuario().getId());
+		}
+		else if(inscricaoEvento.getEvento().getId() == null && inscricaoEvento.getUsuario().getId() == null) {
+			inscricaoEventoFilter.setId(inscricaoEvento.getId());
+		}		
+		else if(inscricaoEvento.getEvento().getId() == null) {
+			inscricaoEventoFilter.setUsuario_id(inscricaoEvento.getUsuario().getId());
+			inscricaoEventoFilter.setId(inscricaoEvento.getId());
+		}
+		else if(inscricaoEvento.getUsuario().getId() == null) {
+			inscricaoEventoFilter.setEvento_id(inscricaoEvento.getEvento().getId());
+			inscricaoEventoFilter.setId(inscricaoEvento.getId());
+		}
+		else if(inscricaoEvento.getId() == null) {
+			inscricaoEventoFilter.setUsuario_id(inscricaoEvento.getUsuario().getId());
+			inscricaoEventoFilter.setEvento_id(inscricaoEvento.getEvento().getId());
+		}
+				
+		List<InscricaoEvento> inscricoes = inscricaoEventoRepository.pesquisar(inscricaoEventoFilter, situacao);
 		
 		return inscricoes;
 	}
@@ -115,10 +146,14 @@ public class InscricaoEventoService {
 			for (InscricaoEvento insEvento : inscricoesEventos) {
 				if((data_de_comparacao).after(Date.from(Instant.now())) &&
 					(inscricaoEvento.getEvento().getData_e_hora_de_fim().before(Date.from(Instant.now())))) {
-					inscricaoEvento.setPresenca(presenca);
+					
+					inscricaoEvento.setPresenca(Presenca.PRESENTE);
 					inscricaoEventoRepository.save(inscricaoEvento);
+					
 				} else {
+					
 					throw new UnavailableException("Check-in indisponível.");
+				
 				}
 			}
 		}

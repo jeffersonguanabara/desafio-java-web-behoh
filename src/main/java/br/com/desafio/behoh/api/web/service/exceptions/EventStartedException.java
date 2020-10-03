@@ -1,4 +1,4 @@
-package br.com.desafio.behoh.api.web.service.exception;
+package br.com.desafio.behoh.api.web.service.exceptions;
 
 public class EventStartedException extends RuntimeException {
 

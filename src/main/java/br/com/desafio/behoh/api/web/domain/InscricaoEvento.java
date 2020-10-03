@@ -39,12 +39,11 @@ public class InscricaoEvento {
 	private Date data_de_inscricao;
 	
 	public InscricaoEvento() {
-		super();
+		
 	}
 
 	public InscricaoEvento(Usuario usuario, Evento evento, Situacao situacao, Presenca presenca,
 			Date data_de_inscricao) {
-		super();
 		this.usuario = usuario;
 		this.evento = evento;
 		this.situacao = situacao;

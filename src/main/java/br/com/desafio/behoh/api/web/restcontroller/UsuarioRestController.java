@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.desafio.behoh.api.web.domain.InscricaoEvento;
+import br.com.desafio.behoh.api.web.domain.Situacao;
 import br.com.desafio.behoh.api.web.domain.Usuario;
+import br.com.desafio.behoh.api.web.service.InscricaoEventoService;
 import br.com.desafio.behoh.api.web.service.UsuarioService;
 import javassist.NotFoundException;
 
@@ -23,6 +26,9 @@ public class UsuarioRestController {
 	
 	@Autowired
 	private UsuarioService usuarioService;
+	
+	@Autowired
+	private InscricaoEventoService InscricaoEventoService;
 	
 	@GetMapping("/usuarios")
 	public ResponseEntity<?> listarTodosOsUsuarios() {
@@ -48,5 +54,15 @@ public class UsuarioRestController {
 	@PutMapping("/usuarios")
 	public ResponseEntity<?> editarUsuario(@RequestBody @Validated Usuario usuario) throws NotFoundException {
 		return ResponseEntity.ok(usuarioService.atualizarUsuario(usuario));
+	}
+	
+	@GetMapping("usuarios/{usuario_id}/incricoes")
+	public ResponseEntity<?> listarInscricoesDoUsuario(@PathVariable Long usuario_id) {
+		Usuario usuario = new Usuario();
+		usuario.setId(usuario_id);
+		InscricaoEvento inscricaoEvento = new InscricaoEvento();
+		inscricaoEvento.setUsuario(usuario);
+		
+		return ResponseEntity.ok(InscricaoEventoService.pesquisar(inscricaoEvento, Situacao.INSCRITO));
 	}
 }
