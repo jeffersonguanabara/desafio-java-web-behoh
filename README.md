@@ -25,6 +25,10 @@ O projeto está estruturado em pacotes, cada um com sua função:
 **- Package service:** contém as classes que estão responsáveis pela regra de negócio do projeto, assim também as classes de exceções;
 **- Package restcontroller ou controller:** pacote responsavél pelos mapeamentos dos endpoints da API correspondente a cada recurso existente.
 
+### OBSERVAÇÂO:
+
+A API não dispõe de testes implementados. Ainda ha implementar.
+
 ## Importando o Projeto
 
 Recomendo o uso da IDE Spring Tools, que foi a IDE usada para desenvolver a aplicação.
@@ -100,6 +104,22 @@ Todos os endpoints iniciam-se por: http://localhost:8080/api
 - ENDPOINT: http://localhost:8080/api/eventos/{id}/inscricao
 - O método HTTP usado é o POST.
 - Corpo da requisição deve informar os dados refetentes ao evento.
+	`
+		{
+		"usuario": {
+			"id": 1,
+			"nome": "Thiago José Medeiros"
+		},
+		"evento": {
+			"id": 1,
+			"nome": "Semana da Computação",
+			"vagas": 40,
+			"data_e_hora_de_inicio": "2020-10-02 19:00:00",
+			"data_e_hora_de_fim": "2020-10-02 22:30:00"
+		},
+		"situacao": 1 
+		}
+	`
 
 **Fazer reserva no Evento:** 
 
@@ -109,30 +129,31 @@ Todos os endpoints iniciam-se por: http://localhost:8080/api
 
 **Cancelar inscrição no Evento:** 
 
-- ENDPOINT: http://localhost:8080/api/eventos/{id}/reserva
+- ENDPOINT: http://localhost:8080/api/eventos/{id}/usuario/{id}
 - O método HTTP usado é o DELETE.
-- Corpo da requisição deve informar os dados refetentes ao evento.
+- eventos/{id} refere-se ao id do evento.
+- usuario/{id} refere-se ao id do usuário.
 
 **Listar inscritos no Evento:** 
 
-- ENDPOINT: http://localhost:8080/api/eventos/{id}/reserva
+- ENDPOINT: http://localhost:8080/api/eventos/{id}/lista-inscritos
 - O método HTTP usado é o GET.
-- Corpo da requisição deve informar os dados refetentes ao evento.
+- {id} refere-se ao id do usuário.
 
 **Listar eventos inscritos do usuario:** 
 
-- ENDPOINT: http://localhost:8080/api/eventos/{id}/reserva
+- ENDPOINT: http://localhost:8080/api/usuarios/{id}/eventos
 - O método HTTP usado é o GET.
-- Corpo da requisição deve informar os dados refetentes ao evento.
+- {id} refere-se ao id do usuário.
 
 **Validando a entrada do usuário no evento:**
 
-- ENDPOINT: http://localhost:8080/api/eventos/{id}/reserva
+- ENDPOINT: http://localhost:8080/api/eventos/{id}/validar
 - O método HTTP usado é o PUT.
-- Corpo da requisição deve informar os dados refetentes ao evento.
+- sem corpo.
 
 **Conversão de reservas em inscrições:** 
 
-- ENDPOINT: http://localhost:8080/api/eventos/{id}/reserva
+- ENDPOINT: http://localhost:8080/api/eventos/{id}/converter
 - O método HTTP usado é o PUT.
-- Corpo da requisição deve informar os dados refetentes ao evento.
+- sem corpo.
