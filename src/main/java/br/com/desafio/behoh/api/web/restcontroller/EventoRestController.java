@@ -100,9 +100,15 @@ public class EventoRestController {
 		return ResponseEntity.noContent().build();
 	}
 	
-	@PutMapping("/eventos/{evento_id}/presenca")
+	@PutMapping("/eventos/{evento_id}/validar")
 	public ResponseEntity<?> validarEntradaNoEvento(@RequestBody @Validated InscricaoEvento inscricaoEvento) throws UnavailableException {
 		inscricaoEventoService.checkInEvent(inscricaoEvento, Presenca.PRESENTE); 
+		return ResponseEntity.noContent().build();
+	}
+	
+	@PutMapping("/eventos/{evento_id}/converter")
+	public ResponseEntity<?> converterSituacaoNoEvento(@RequestBody @Validated InscricaoEvento inscricaoEvento) throws UnavailableException {
+		inscricaoEventoService.converterReservaEmInscricao(inscricaoEvento, Situacao.INSCRITO); 
 		return ResponseEntity.noContent().build();
 	}
 
