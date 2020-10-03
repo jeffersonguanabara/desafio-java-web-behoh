@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.desafio.behoh.api.web.domain.Evento;
 import br.com.desafio.behoh.api.web.domain.InscricaoEvento;
 import br.com.desafio.behoh.api.web.domain.Situacao;
 import br.com.desafio.behoh.api.web.domain.Usuario;
@@ -56,13 +57,16 @@ public class UsuarioRestController {
 		return ResponseEntity.ok(usuarioService.atualizarUsuario(usuario));
 	}
 	
-	@GetMapping("usuarios/{usuario_id}/incricoes")
-	public ResponseEntity<?> listarInscricoesDoUsuario(@PathVariable Long usuario_id) {
+	@GetMapping("/usuarios/{id}/eventos")
+	public ResponseEntity<?> listarInscritosNoEvento(@PathVariable Long id) {
+		System.out.println("Chegou aqui");
 		Usuario usuario = new Usuario();
-		usuario.setId(usuario_id);
+		usuario.setId(id);
+		System.out.println(usuario.toString());
 		InscricaoEvento inscricaoEvento = new InscricaoEvento();
 		inscricaoEvento.setUsuario(usuario);
+		inscricaoEvento.setSituacao(Situacao.INSCRITO);
 		
-		return ResponseEntity.ok(InscricaoEventoService.pesquisar(inscricaoEvento, Situacao.INSCRITO));
+		return ResponseEntity.ok(InscricaoEventoService.pesquisar(inscricaoEvento, inscricaoEvento.getSituacao()));
 	}
 }

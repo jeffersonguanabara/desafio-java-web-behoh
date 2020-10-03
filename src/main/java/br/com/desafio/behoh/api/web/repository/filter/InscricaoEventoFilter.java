@@ -24,5 +24,10 @@ public class InscricaoEventoFilter {
 	public void setEvento_id(Long evento_id) {
 		this.evento_id = evento_id;
 	}
+	@Override
+	public String toString() {
+		return "InscricaoEventoFilter [id=" + id + ", usuario_id=" + usuario_id + ", evento_id=" + evento_id + "]";
+	}
+	
 	
 }

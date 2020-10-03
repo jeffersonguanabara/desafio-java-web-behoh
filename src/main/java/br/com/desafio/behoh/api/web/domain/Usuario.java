@@ -13,6 +13,8 @@ import javax.persistence.UniqueConstraint;
 
 import org.springframework.lang.NonNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "usuario",uniqueConstraints = {@UniqueConstraint(columnNames = "nome")})
 public class Usuario {
@@ -26,6 +28,7 @@ public class Usuario {
 	private String nome;
 	
 	@OneToMany(mappedBy = "usuario")
+	@JsonIgnore
 	private List<InscricaoEvento> inscricoes;
 	
 	public Usuario() {

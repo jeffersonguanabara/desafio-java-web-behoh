@@ -102,20 +102,23 @@ public class InscricaoEventoService {
 		System.out.println("Entrou no metodo de pesquisa");
 		InscricaoEventoFilter inscricaoEventoFilter = new InscricaoEventoFilter();
 		
-		if(inscricaoEvento.getUsuario().getId() == null && inscricaoEvento.getId() == null) {
+		System.out.println(inscricaoEvento.toString());
+		
+		if((inscricaoEvento.getUsuario() == null) && (inscricaoEvento.getId() == null)) {
+			System.out.println("Entrou no 1º if");
 			inscricaoEventoFilter.setEvento_id(inscricaoEvento.getEvento().getId());
 		}
-		else if(inscricaoEvento.getEvento().getId() == null && inscricaoEvento.getId() == null) {
+		else if(inscricaoEvento.getEvento() == null && inscricaoEvento.getId() == null) {
 			inscricaoEventoFilter.setUsuario_id(inscricaoEvento.getUsuario().getId());
 		}
-		else if(inscricaoEvento.getEvento().getId() == null && inscricaoEvento.getUsuario().getId() == null) {
+		else if(inscricaoEvento.getEvento() == null && inscricaoEvento.getUsuario() == null) {
 			inscricaoEventoFilter.setId(inscricaoEvento.getId());
 		}		
-		else if(inscricaoEvento.getEvento().getId() == null) {
+		else if(inscricaoEvento.getEvento() == null) {
 			inscricaoEventoFilter.setUsuario_id(inscricaoEvento.getUsuario().getId());
 			inscricaoEventoFilter.setId(inscricaoEvento.getId());
 		}
-		else if(inscricaoEvento.getUsuario().getId() == null) {
+		else if(inscricaoEvento.getUsuario() == null) {
 			inscricaoEventoFilter.setEvento_id(inscricaoEvento.getEvento().getId());
 			inscricaoEventoFilter.setId(inscricaoEvento.getId());
 		}

@@ -75,6 +75,7 @@ public class EventoRestController {
 		System.out.println("Chegou aqui");
 		Evento evento = new Evento();
 		evento.setId(id);
+		System.out.println(evento.toString());
 		InscricaoEvento inscricaoEvento = new InscricaoEvento();
 		inscricaoEvento.setEvento(evento);
 		inscricaoEvento.setSituacao(Situacao.INSCRITO);

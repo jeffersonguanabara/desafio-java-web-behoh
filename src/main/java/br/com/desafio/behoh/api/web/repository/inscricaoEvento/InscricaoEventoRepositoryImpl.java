@@ -20,60 +20,62 @@ public class InscricaoEventoRepositoryImpl implements InscricaoEventoQuery {
 	public List<InscricaoEvento> pesquisar(InscricaoEventoFilter inscricaoEventoFilter, Situacao situacao) {
 		System.out.println("Chegou no reposiroty");
 		System.out.println(inscricaoEventoFilter.toString());
+		int nova_situacao = 0;
+		if (situacao == Situacao.INSCRITO) {
+			nova_situacao += 0;
+		} else {
+			nova_situacao += 1;
+		}
 		
 		TypedQuery<InscricaoEvento> query = null;
-		if (inscricaoEventoFilter.getId() != null 
-				&& inscricaoEventoFilter.getEvento_id() != null 
-				&& inscricaoEventoFilter.getUsuario_id() != null) {
-			
+		if ((inscricaoEventoFilter.getEvento_id() != null) &&
+				(inscricaoEventoFilter.getUsuario_id() != null)) {
+			System.out.println("entrou no 1º if");	
 			query = (TypedQuery<InscricaoEvento>) entityManager.createNativeQuery(
-					"select * from inscricao_evento ie " +
-					"inner join evento e on ie.evento_id = e.id " +
-					"inner join usuario u on ie.usuario_id = u.id " +
-					"where ie.situacao = :situacao and ie.evento_id = :evento_id " + 
-					"and ie.usuario_id = :usuario_id and ei.id = :id", InscricaoEvento.class);			
+				"select * from inscricao_evento ie " +
+				"inner join evento e on ie.evento_id = e.id " +
+				"inner join usuario u on ie.usuario_id = u.id " +
+				"where ie.situacao = :situacao and ie.evento_id = :evento_id " + 
+				"and ie.usuario_id = :usuario_id " +
+				"order by ie.id asc", InscricaoEvento.class);			
 			query.setParameter("evento_id", inscricaoEventoFilter.getEvento_id());
 			query.setParameter("usuario_id", inscricaoEventoFilter.getUsuario_id());
+			query.setParameter("situacao", nova_situacao);
+			
+		} else	if (inscricaoEventoFilter.getEvento_id() != null) {
+			System.out.println("entrou no 2º if");	
+			query = (TypedQuery<InscricaoEvento>) entityManager.createNativeQuery(
+				"select * from inscricao_evento ie " +
+				"inner join evento e on ie.evento_id = e.id " +
+				"inner join usuario u on ie.usuario_id = u.id " +
+				"where ie.situacao = :situacao and ie.evento_id = :evento_id " +
+				"order by ie.id asc", InscricaoEvento.class);			
+			query.setParameter("evento_id", inscricaoEventoFilter.getEvento_id());
+			query.setParameter("situacao", nova_situacao);
+			
+		} else if (inscricaoEventoFilter.getUsuario_id() != null) {
+			System.out.println("entrou no 3º if");		
+			query = (TypedQuery<InscricaoEvento>) entityManager.createNativeQuery(
+				"select * from inscricao_evento ie " +
+				"inner join evento e on ie.evento_id = e.id " +
+				"inner join usuario u on ie.usuario_id = u.id " +
+				"where ie.situacao = :situacao and ie.usuario_id = :usuario_id " +
+				"order by ie.id asc", InscricaoEvento.class);			
+			query.setParameter("usuario_id", inscricaoEventoFilter.getUsuario_id());
+			query.setParameter("situacao", nova_situacao);
+					
+		} else if (inscricaoEventoFilter.getId() != null) {
+			System.out.println("entrou no 4º if");			
+			query = (TypedQuery<InscricaoEvento>) entityManager.createNativeQuery(
+				"select * from inscricao_evento ie " +
+				"inner join evento e on ie.evento_id = e.id " +
+				"inner join usuario u on ie.usuario_id = u.id " +
+				"where ie.situacao = :situacao and ie.id = :id " +
+				"order by ie.id asc", InscricaoEvento.class);			
 			query.setParameter("id", inscricaoEventoFilter.getId());
-			query.setParameter("situacao", situacao);
-		
-		} else {
-			if (inscricaoEventoFilter.getEvento_id() != null) {
+			query.setParameter("situacao", nova_situacao);
+		}
 				
-				query = (TypedQuery<InscricaoEvento>) entityManager.createNativeQuery(
-					"select * from inscricao_evento ie " +
-					"inner join evento e on ie.evento_id = e.id " +
-					"inner join usuario u on ie.usuario_id = u.id " +
-					"where ie.situacao = :situacao and ie.evento_id = :evento_id " +
-					"order by ie.id asc", InscricaoEvento.class);			
-				query.setParameter("evento_id", inscricaoEventoFilter.getEvento_id());
-				query.setParameter("situacao", situacao);
-				
-			} else { 
-				if (inscricaoEventoFilter.getUsuario_id() != null) {
-					
-					query = (TypedQuery<InscricaoEvento>) entityManager.createNativeQuery(
-						"select * from inscricao_evento ie " +
-						"inner join evento e on ie.evento_id = e.id " +
-						"inner join usuario u on ie.usuario_id = u.id " +
-						"where ie.situacao = :situacao and ie.usuario_id = :ususario_id " +
-						"order by ie.id asc", InscricaoEvento.class);			
-					query.setParameter("usuario", inscricaoEventoFilter.getUsuario_id());
-					query.setParameter("situacao", situacao);
-					
-				} else {
-					if (inscricaoEventoFilter.getId() != null) {
-						
-						query = (TypedQuery<InscricaoEvento>) entityManager.createNativeQuery(
-							"select * from inscricao_evento ie " +
-							"where ie.situacao = :situacao and ie.id = :id " +
-							"order by ie.id asc", InscricaoEvento.class);			
-						query.setParameter("id", inscricaoEventoFilter.getId());
-						query.setParameter("situacao", situacao);
-					}
-				}
-			}	
-		}	
 		System.out.println("Query: " + query.getResultList());
 		return query.getResultList();
 	}

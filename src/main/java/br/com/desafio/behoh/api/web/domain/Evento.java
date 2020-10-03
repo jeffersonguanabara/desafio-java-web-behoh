@@ -13,6 +13,8 @@ import javax.persistence.Table;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.lang.NonNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "evento")
 public class Evento {
@@ -36,6 +38,7 @@ public class Evento {
 	private Date data_e_hora_de_fim;
 	
 	@OneToMany(mappedBy = "evento")
+	@JsonIgnore
 	private List<InscricaoEvento> inscricoes;
 	
 	public Evento() {
